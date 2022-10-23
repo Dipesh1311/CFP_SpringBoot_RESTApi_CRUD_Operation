@@ -1,8 +1,10 @@
 package com.bridgelabz.firstproject.exception;
 
 
-public class UserException {
+public class UserException extends Exception {
 	
+	
+	private static final long serialVersionUID = 1L;
 	private String message;
 	private String details;
 	

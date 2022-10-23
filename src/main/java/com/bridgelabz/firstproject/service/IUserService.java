@@ -4,21 +4,22 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bridgelabz.firstproject.ResponseEntity;
-import com.bridgelabz.firstproject.exception.UserNotFoundException;
+import com.bridgelabz.firstproject.dto.UserDto;
+import com.bridgelabz.firstproject.exception.UserException;
 import com.bridgelabz.firstproject.model.User;
 
 public interface IUserService {
 	
-	public ResponseEntity addUser(User user);
+	public ResponseEntity addUser(User user) throws UserException;
 
-	public Optional<User> getUser(int id) throws UserNotFoundException ;
+	public UserDto getUser(int id) throws UserException ;
 
-	public void deleteUser(int id);
+	public void deleteUser(int id) throws UserException ;
 
-	public User updateUser(User user, int id);
+	public User updateUser(User user, int id) throws UserException;
 
-	public List<User> getAllUser();
+	public List<UserDto> getAllUser();
 
-	public List<User> getUserByName(String name);	
+	public Optional<User> getUserByName(String name) throws UserException;	
 
 }

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.firstproject.ResponseEntity;
-import com.bridgelabz.firstproject.exception.UserNotFoundException;
+import com.bridgelabz.firstproject.dto.UserDto;
+import com.bridgelabz.firstproject.exception.UserException;
 import com.bridgelabz.firstproject.model.User;
 import com.bridgelabz.firstproject.repository.UserRepository;
 import com.bridgelabz.firstproject.service.IUserService;
@@ -28,21 +29,21 @@ public class UserController {
 	UserRepository userRepo;
 		
 	@PostMapping("/add")
-	public ResponseEntity add(@RequestBody User user) {		
+	public ResponseEntity add(@RequestBody User user) throws UserException {		
 		
 		return userService.addUser(user);
 		
 	}
 	
 	@GetMapping("/getalluser")
-	public List<User> getAllUser() {
+	public List<UserDto> getAllUser() {
 		
 		return this.userService.getAllUser();		
 	}
 	
 	
 	@GetMapping("/search/{id}")
-	public Optional<User> getUser(@PathVariable int id) throws UserNotFoundException  {		
+	public UserDto getUser(@PathVariable int id) throws UserException  {		
 		
 		System.out.println("ID "+id+" data");
 		return this.userService.getUser(id);
@@ -50,23 +51,23 @@ public class UserController {
 	}
 	
 	@GetMapping("/search")
-	public List<User> getUserByName(@RequestParam String name){
+	public Optional<User> getUserByName(@RequestParam String name) throws UserException {
 		
-		List<User> user = userService.getUserByName(name);
+		Optional<User> user = userService.getUserByName(name);
 		return user;
 		
 	}
 	
 	
-	@DeleteMapping("/delete/{id}")
-	public void deleteUser(@PathVariable int id) {
+	@DeleteMapping("/delete/{id}") 
+	public void deleteUser(@PathVariable int id) throws UserException  {
 		
 		userService.deleteUser(id);
 				
 	}
 	
 	@PutMapping("/update/{id}")
-	public User updateUser(@RequestBody User user,@PathVariable int id) {
+	public User updateUser(@RequestBody User user,@PathVariable int id) throws UserException {
 		userService.updateUser(user,id);
 		return user;
 		

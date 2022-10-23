@@ -3,12 +3,14 @@ package com.bridgelabz.firstproject.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.bridgelabz.firstproject.ResponseEntity;
-import com.bridgelabz.firstproject.exception.UserNotFoundException;
+import com.bridgelabz.firstproject.dto.UserDto;
+import com.bridgelabz.firstproject.exception.UserException;
 import com.bridgelabz.firstproject.model.User;
 import com.bridgelabz.firstproject.repository.UserRepository;
 
@@ -18,59 +20,78 @@ public class UserService implements IUserService {
 	@Autowired
 	UserRepository userRepo;
 	
-	@Override
-	public ResponseEntity addUser(User user) {
-	
-		User list1 = userRepo.save(user);		
-		return new ResponseEntity(list1,"one user added");
-	}
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Override
-	public List<User> getAllUser() {
-		
-		List<User> allUser = userRepo.findAll();
-		return allUser;
-	}
+	public ResponseEntity addUser(User user) throws UserException {
 
-
-	@Override
-	public Optional<User> getUser(int id) throws UserNotFoundException  {
+		String userName = user.getName();
 		
-		if(userRepo.findById(id).isPresent()) {
-		Optional<User> user = userRepo.findById(id);
-		return user;
-		
+		if(userRepo.findByName(userName).isPresent()) {
+			throw new UserException("User already exist","try to add with different user name");
 		} else {
-		 throw new UserNotFoundException("User not found");
+			User list1 = userRepo.save(user);		
+			return new ResponseEntity(list1,"one user added");
 		}
 	}
 	
 	@Override
-	public List<User> getUserByName(String name) {
-		List<User> user = userRepo.findByName(name);
-		return user;
+	public List<UserDto> getAllUser() {
+		
+		return userRepo.findAll().stream().map(user ->modelMapper.map(user,UserDto.class)).collect(Collectors.toList());
+		 
 	}
 
+
 	@Override
-	public void deleteUser(int id) {
+	public UserDto getUser(int id) throws UserException  {
 		
-		if(userRepo.findById(id).isPresent()) {			
-			userRepo.deleteById(id);
-			System.out.println("ID "+id+" user deleted");
+		if(userRepo.findById(id).isPresent()) {
+		Optional<User> user = userRepo.findById(id);
+		UserDto userByDto = modelMapper.map(user, UserDto.class);
+		return userByDto;
 		
 		} else {
-			System.out.println("ID "+id+" user not found");
-		}	
+		 throw new UserException("User not found","enter valid user id");
+		}
+	}
+	
+	@Override
+	public Optional<User> getUserByName(String name) throws UserException{
+
+			if(userRepo.findByName(name).isPresent()) {
+				Optional<User> user = userRepo.findByName(name);		
+			return user;
+			} else {
+				throw new UserException("please enter different user name","entered user is not found");
+			}
+			
+		} 	
+		
+	
+	
+
+	@Override
+	public void deleteUser(int id) throws UserException  {
+		if(userRepo.findById(id).isPresent()) {
+		userRepo.deleteById(id);
+		} else {
+			throw new UserException("User not deleted","enter valid id");
+		}
 	}
 
 	@Override
-	public User updateUser(User user, int id) {
+	public User updateUser(User user, int id) throws UserException {
 		if(userRepo.findById(id).isPresent()) {
 			user.setId(id);
 			userRepo.save(user);
 		}
-		return user;		
+		return user;
+	
+				
 		
 	}
+
 
 }
