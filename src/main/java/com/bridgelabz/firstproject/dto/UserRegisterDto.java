@@ -1,28 +1,11 @@
 package com.bridgelabz.firstproject.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-
-public class UserDto {
+public class UserRegisterDto {
 	
-	@NotEmpty
-	@Size(min=3)
 	private String name;
-	
-	@Email
 	private String email;
-	
-	@NotNull
 	private Long mobileNumber;
-	
-	@NotEmpty
 	private String gender;
-	
-	@NotEmpty
-	@Size(min=6)
 	private String password;
 	
 
@@ -56,7 +39,7 @@ public class UserDto {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public UserDto(String name, String email, Long mobileNumber, String gender, String password) {
+	public UserRegisterDto(String name, String email, Long mobileNumber, String gender, String password) {
 		
 		this.name = name;
 		this.email = email;
@@ -65,7 +48,8 @@ public class UserDto {
 		this.password = password;
 	}
 	
-	public UserDto() {
+	public UserRegisterDto() {
 		
 	}
+
 }

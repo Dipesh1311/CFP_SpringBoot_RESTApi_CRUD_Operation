@@ -3,6 +3,7 @@ package com.bridgelabz.firstproject.controller;
 import java.util.List;
 import java.util.Optional;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.firstproject.ResponseEntity;
+import com.bridgelabz.firstproject.dto.LoginDto;
 import com.bridgelabz.firstproject.dto.UserDto;
 import com.bridgelabz.firstproject.exception.UserException;
 import com.bridgelabz.firstproject.model.User;
-import com.bridgelabz.firstproject.repository.UserRepository;
 import com.bridgelabz.firstproject.service.IUserService;
 
 @RestController
@@ -25,8 +26,7 @@ public class UserController {
 	
 	@Autowired
 	IUserService userService;
-	User user;
-	UserRepository userRepo;
+	
 		
 	@PostMapping("/add")
 	public ResponseEntity add(@RequestBody User user) throws UserException {		
@@ -45,7 +45,6 @@ public class UserController {
 	@GetMapping("/search/{id}")
 	public UserDto getUser(@PathVariable int id) throws UserException  {		
 		
-		System.out.println("ID "+id+" data");
 		return this.userService.getUser(id);
 		
 	}
@@ -67,10 +66,24 @@ public class UserController {
 	}
 	
 	@PutMapping("/update/{id}")
-	public User updateUser(@RequestBody User user,@PathVariable int id) throws UserException {
+	public UserDto updateUser(@RequestBody UserDto user,@PathVariable int id) throws UserException {
 		userService.updateUser(user,id);
 		return user;
 		
 	}
 	
+	@GetMapping("/login")
+	public ResponseEntity getUserByLoginDto(@RequestBody LoginDto loginDto) throws UserException {
+		return userService.getUserByLogin(loginDto);
+	}
+	
+	@GetMapping( "/hellouser")
+	public String getUser() {
+		return "Hello User";
+	}
+	
+	@GetMapping( {"/helloadmin"})
+	public String getAdmin() {
+		return "Hello Admin";
+	}
 }
