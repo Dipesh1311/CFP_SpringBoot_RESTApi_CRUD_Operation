@@ -24,6 +24,10 @@ public interface IUserService {
 	public Optional<User> getUserByName(String name) throws UserException;	
 	
 	public ResponseEntity getUserByLogin(LoginDto loginDto) throws UserException;
+
+	public String getToken(LoginDto loginDto) throws UserException;
+
+	public UserDto getUserByLogin(String token);
 	
 
 

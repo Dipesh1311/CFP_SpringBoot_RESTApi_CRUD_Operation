@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -77,13 +78,15 @@ public class UserController {
 		return userService.getUserByLogin(loginDto);
 	}
 	
-	@GetMapping( "/hellouser")
-	public String getUser() {
-		return "Hello User";
+	@GetMapping("/gettoken")
+	public String getToken(@RequestBody LoginDto loginDto) throws UserException {
+		String token = userService.getToken(loginDto);
+		return token;
 	}
 	
-	@GetMapping( {"/helloadmin"})
-	public String getAdmin() {
-		return "Hello Admin";
+	@GetMapping("/getUserByLogin")
+	public ResponseEntity getUserByLogin(@RequestHeader String token) {
+		UserDto userDto = userService.getUserByLogin(token);
+		return new ResponseEntity(userDto, "Fetched successfully");
 	}
 }

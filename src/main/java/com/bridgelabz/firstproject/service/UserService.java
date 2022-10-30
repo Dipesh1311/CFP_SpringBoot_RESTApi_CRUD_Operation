@@ -14,6 +14,7 @@ import com.bridgelabz.firstproject.dto.UserDto;
 import com.bridgelabz.firstproject.exception.UserException;
 import com.bridgelabz.firstproject.model.User;
 import com.bridgelabz.firstproject.repository.UserRepository;
+import com.bridgelabz.firstproject.utilities.JwtTokenUtil;
 
 @Service
 public class UserService implements IUserService {
@@ -23,6 +24,9 @@ public class UserService implements IUserService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	JwtTokenUtil jwtTokenUtil;
 
 	@Override
 	public ResponseEntity addUser(User user) throws UserException {		
@@ -113,6 +117,26 @@ public class UserService implements IUserService {
 		}
 			
 
+	}
+
+	@Override
+	public String getToken(LoginDto loginDto) throws UserException {
+
+		Optional<User> userModel = userRepo.findByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
+		if (userModel.isEmpty()) {
+			throw new UserException("Invalid User!","Try again with valid credential");
+		} else {
+			String token = jwtTokenUtil.generateToken(loginDto);
+			return token;
+		}
+	}
+
+	@Override
+	public UserDto getUserByLogin(String token) {
+		LoginDto loginDetails = jwtTokenUtil.deCode(token);
+		Optional<User> userAfterDecode = userRepo.findByEmailAndPassword(loginDetails.getEmail(), loginDetails.getPassword()); 
+		UserDto userInfo = modelMapper.map(userAfterDecode, UserDto.class);
+		return userInfo;
 	}	
 
 }
